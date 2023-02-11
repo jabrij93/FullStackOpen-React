@@ -56,7 +56,7 @@ const Button = (props) => {
 const Statistic = (props) => {
   return (
     <div>
-      <p>{props.title} {props.type} </p>
+      <p> {props.title} {props.type} </p>
     </div>
   )
 }
