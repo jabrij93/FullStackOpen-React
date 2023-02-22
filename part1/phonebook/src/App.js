@@ -1,12 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import personService from './services/persons'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '012-3456789', id: 1 },
-    { name: 'Ada Lovelace', number: '013-4567890', id: 2 },
-    { name: 'Dan Abramov', number: '011-1234567', id: 3 },
-    { name: 'Mary Poppendieck', number: '016-5556789', id: 4 }
-  ])
+  const [persons, setPersons] = useState([])
 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -25,12 +21,25 @@ const App = () => {
     if (isNameExist(nameObject.name)) {
       alert("name already exist")
     } else {
-      setPersons(persons.concat(nameObject))
-      setNewName('')
-      setNewNumber('')
+      personService
+        .create(nameObject)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+        })
+      }
     }
-}
 
+  useEffect(() => {
+    personService
+      .getAll()
+      .then(response=> {
+        console.log('promise fulfilled')
+        setPersons(response.data)
+      })
+  }, [])
+  console.log('render', persons.length, 'person')
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)

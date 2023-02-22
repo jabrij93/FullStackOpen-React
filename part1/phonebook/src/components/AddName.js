@@ -1,19 +1,19 @@
-const AddName = (props, event) => {
+const AddName = (event, newName, newNumber, persons, setPersons, setNewName, setNewNumber) => {
     event.preventDefault()
 
     const nameObject = {
-      name: props.newName,
-      number: props.newNumber2
+      name: newName,
+      number: newNumber
     }
 
-    const isNameExist = (value) => props.persons.some(person => person.name.includes(value))
+    const isNameExist = (value) => persons.some(person => person.name.includes(value))
     
     if (isNameExist(nameObject.name)) {
       alert("name already exist")
     } else {
-      props.setPersons(props.persons.concat(nameObject))
-      props.setNewName('')
-      props.setNewNumber('')
+      setPersons(persons.concat(nameObject))
+      setNewName('')
+      setNewNumber('')
     }
 }
 
