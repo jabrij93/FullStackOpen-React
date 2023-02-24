@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 import Person from './components/Person'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState('')
+  const [errorMessage, setErrorMessage] = useState('Notification :)')
 
   const addName = (event) => {
     event.preventDefault()
@@ -27,6 +29,12 @@ const App = () => {
           setPersons(persons.map(person=>person.id === existingPerson.id ? response.data : person))
           setNewName('')
           setNewNumber('')
+          setErrorMessage(
+            `${existingPerson.name}'s phone number has been updated`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
     } else if(!existingPerson) {
       personService
@@ -35,6 +43,12 @@ const App = () => {
           setPersons(persons.concat(response.data))
           setNewName('')
           setNewNumber('')
+          setErrorMessage(
+            `${nameObject.name}'s has been added to the phonebook`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
       }
   }
@@ -64,16 +78,24 @@ const App = () => {
     if (newPersonName && window.confirm(`Do you want to delete ${newPersonName} ?`)) {
       personService
         .delete(id)
-        setPersons(newPerson)
-    }
+        .catch(error => {
+          setErrorMessage(
+            `${newPersonName} has been removed from the server`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        }) 
+        setPersons(newPerson) 
+    } 
   }
 
   return (
     <div>
-      <h2> Phonebook </h2>
+      <h1> Phonebook </h1>
       <input type="text" placeholder="Search..." onChange= {(event) => setSearchTerm(event.target.value)} />
-
-      <h2> Add Info </h2>
+      <h1> Add Info </h1>
+      <Notification message={errorMessage} />
       <form onSubmit={addName}>
         <div>
           name: <input value={newName} onChange={handleNameChange} />
@@ -86,7 +108,7 @@ const App = () => {
         </div>
       </form>
 
-      <h2> Numbers </h2>
+      <h1> Numbers </h1>
 
       <ul>
       {persons.filter((person) => {
