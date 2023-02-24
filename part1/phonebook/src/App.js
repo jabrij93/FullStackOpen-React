@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import Person from './components/Person'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -29,7 +30,7 @@ const App = () => {
           setNewNumber('')
         })
       }
-    }
+  }
 
   useEffect(() => {
     personService
@@ -47,6 +48,17 @@ const App = () => {
 
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
+  }
+
+  const handleDelete = (id) => {
+    const newPerson = persons.filter((person) => person.id === id)
+    const newPersonName = newPerson[0]?.name
+
+    if (newPersonName && window.confirm(`Do you want to delete ${newPersonName} ?`)) {
+      personService
+        .delete(id)
+        setPersons(newPerson)
+    }
   }
 
   return (
@@ -76,9 +88,9 @@ const App = () => {
       } else if (person.name.toLowerCase().includes(searchTerm.toLowerCase())) {
         return person
       }
-      }).map((person) => {
+      }).map((person, id) => {
         return (
-        <li key={person.name}> {person.name} {person.number} </li>
+        <Person key={person.id} person={person}  deleteButton={()=>handleDelete(person.id)} text='Delete' />
       );
       })
       }

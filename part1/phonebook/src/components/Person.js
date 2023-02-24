@@ -1,17 +1,12 @@
 import React from "react";
 
-const Person = (props) => {
-  // props
-  const person = props.person;
-
+const Person = ({person, deleteButton, text}) => {
   return (
-    <div key={person.id} id="person">
-      <aside>
-        <section id="name_and_button">
-          {/* name */} {/*phone number*/}
-          <h1>{person.personName + " (" + person.number + ")"}</h1>
-        </section>
-      </aside>
+    <div>
+        <li> 
+          {person.name} {person.number}
+          <button onClick={deleteButton}> {text} </button> 
+        </li>
     </div>
   );
 }
