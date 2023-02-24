@@ -17,11 +17,18 @@ const App = () => {
       number: newNumber
     }
 
-    const isNameExist = (value) => persons.some(person => person.name.includes(value))
+    const changeNumberText = 'is already added to phonebook, replace the old number with a new one ?'
+    const existingPerson = persons.find(person => person.name === nameObject.name)
     
-    if (isNameExist(nameObject.name)) {
-      alert("name already exist")
-    } else {
+    if (existingPerson && window.confirm(`${existingPerson.name} ${changeNumberText}`)) {
+      personService
+        .update(existingPerson.id, nameObject)
+        .then(response => {
+          setPersons(persons.map(person=>person.id === existingPerson.id ? response.data : person))
+          setNewName('')
+          setNewNumber('')
+        })
+    } else if(!existingPerson) {
       personService
         .create(nameObject)
         .then(response => {
